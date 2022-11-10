@@ -89,44 +89,21 @@
 \definecolor{rougepale}{rgb}{1,0.4,0.4}
 %\definecolor{bleufond}{rgb}{0.92,0.91,0.95}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% General color definitions
-\definecolor{monrouge}{RGB}{199,21,11}
-\definecolor{jaunemadison}{RGB}{239,155,15}
-\definecolor{vertmadison}{RGB}{20,148,20}
-\definecolor{kakimadison}{RGB}{121,137,51}
-\definecolor{bleumadison}{RGB}{4,139,154}
-\definecolor{rougemadison}{RGB}{157,38,29}
-\definecolor{mauvemadison}{RGB}{172,30,68}
-\definecolor{saumonmadison}{RGB}{248,142,85}
-\definecolor{orangemadison}{RGB}{237,127,16}
-\definecolor{rosemadison}{RGB}{249,66,158}
-\definecolor{cerulmadison}{RGB}{15,157,232}
-\definecolor{grismadison}{RGB}{206,206,206}
-\definecolor{fauvemadison}{RGB}{173,79,9}
 
-% Colors used for the theme
-\definecolor{slidecol}{RGB}{157,38,29}
-\definecolor{alertcol}{RGB}{71,12,117}
-\definecolor{examplecol}{RGB}{0,51,105}
 
-% Commands for colored texts
-\newcommand{\vertcolb}[1]{\textcolor{vertmadison}{\textbf{#1}}}
-\newcommand{\bleucolb}[1]{\textcolor{bleumadison}{\textbf{#1}}}
-\newcommand{\rougecolb}[1]{\textcolor{rougemadison}{\textbf{#1}}}
-\newcommand{\jaunecolb}[1]{\textcolor{jaunemadison}{\textbf{#1}}}
-\newcommand{\bleucolm}[1]{\textcolor{bleumadison}{\mathbf{#1}}}
-\newcommand{\vertcol}{\textcolor{vertmadison}}
-\newcommand{\rougecol}{\textcolor{rougemadison}}
-\newcommand{\bleucol}{\textcolor{bleumadison}}
-\newcommand{\jaunecol}{\textcolor{jaunemadison}}
-\newcommand{\examplec}{\textcolor{examplecol}}
-\newcommand{\slidec}{\textcolor{slidecol}}
-\newcommand{\alertc}{\textcolor{alertcol}}
-\newcommand{\redcol}{\textcolor{monrouge}}
-\newcommand{\examplecb}[1]{\textbf{\examplec{#1}}}
-\newcommand{\slidecb}[1]{\textbf{\slidec{#1}}}
-\newcommand{\alertb}[1]{\textbf{\alertc{#1}}}
+
+\newcommand{\dataset}{\ensuremath{\mathcal{D}}}
+\newcommand{\loss}{\ensuremath{\mathcal{L}}}
+\newcommand{\ntrain}{\ensuremath{N}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\x}{\ensuremath{\mathbf{x}}} % predicted and general x
+\newcommand{\tx}{\ensuremath{\tilde{\mathbf{x}}}} % training x 
+\newcommand{\eps}{\ensuremath{\epsilon}}
+
+\newcommand{\params}{\ensuremath{\boldsymbol{\theta}}}
+\newcommand{\nnet}{\ensuremath{f_{\params}}}
+
+
 
 \begin{document}
 
@@ -190,9 +167,38 @@ linewidth=1pt % Width of the border lines around content boxes
 \headerbox{Take-home message}{headerFontColor=red,name=abstract,span=2,column=0,row=0}{
 aaa
 }
-\headerbox{Neural ODE and Fehlberg's method}{headerFontColor=bleutitre,name=eq,span=2,column=2,row=0}{
-aaa
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\headerbox{Neural ODE and Fehlberg's
+  method}{headerFontColor=bleutitre,name=eq,span=2,column=2,row=0}{
+   Given $\dataset=(\tx_{i})_{i=1}^{\ntrain}$, Neural ODE learns: $\dot{\x} = \nnet (\x)$ ($\nnet$ is a NNet
+   ans $\params$ its set of parameters. Inference requires a numerical solver: $ {\x}_{i}=\textrm{ODE\_Solve}(\nnet, \tx_i)$ and the loss function is 
+   $\loss(\params, \dataset) = \sum_{i=1}^{N} ||\tilde{\x}_i - \x_i
+   ||^2$.
+   % 
+   Starting with a step size $h=1$, compute:
+   \begin{equation*}
+     f_1 = \nnet(\x_i),\phantom{5ex} 
+     f_2 = \nnet(\x_i+hf_1), \phantom{5ex} 
+     f_3 = \nnet(\x_i+\frac{h}{4}[f_1+f_2])
+   \end{equation*}
+   \begin{equation}
+     \label{eq:hyps}
+     A_1 = \x_i+\frac{h}{2}[f_1+f_2] \text{ (RK2 method), and } A_2 = \x_i+\frac{h}{6}[f_1+f_2+4f_3] \text{ (RK3).} 
+   \end{equation}
+   With the error rate $ r = \frac{|A_1-A_2|}{h} \approx Kh^2$, then:
+   \begin{itemize}  
+   \item If $r > \eps$ (the tolerance set to $0.1$), $A_2$ is rejected and we restart the computation with a new
+     step size: $ h'= S \times h\sqrt{\epsilon/r}, $ with $S=0.9$ a safety
+     factor.
+   \item Otherwise accept $A_2$ as ${\x}_{i}$
+   \end{itemize}
+
+
 }
+
 \headerbox{First round}{headerFontColor=bleutitre,name=exp1,span=2,column=0,row=0.4}{
   \vspace{-2ex}
   \begin{center}
