@@ -147,47 +147,28 @@ linewidth=1pt % Width of the border lines around content boxes
 
 
 
-%----------------------------------------------------------------------------------------
-%	REFERENCES
-%----------------------------------------------------------------------------------------
 
-% \headerbox{References}{name=references,column=0,span=4,above=bottom}{
-
-% \renewcommand{\section}[2]{\vskip 0.05em} % Get rid of the default "References" section title
-% %\nocite{*} % Insert publications even if they are not cited in the poster
-% \small{ % Reduce the font size in this block
-% \bibliographystyle{plain}
-% \bibliography{refposter} % Use refposter.bib as the bibliography file
-% }
-
-% \small{\hfill\textit{\textbf{Funding for this research was provided by Subcontract 3F-30222 from Argonne National Laboratory and by a doctoral grant from Universit\'e Toulouse III Paul Sabatier.}}}
-
-%}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \headerbox{Take-home message}{headerFontColor=red,name=abstract,span=2,column=0,row=0}{
-aaa
+
 }
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\headerbox{Neural ODE and Fehlberg's
-  method}{headerFontColor=bleutitre,name=eq,span=2,column=2,row=0}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\headerbox{Neural ODE and Fehlberg's method}{headerFontColor=bleutitre,name=eq,span=2,column=2,row=0}{
    Given $\dataset=(\tx_{i})_{i=1}^{\ntrain}$, Neural ODE learns: $\dot{\x} = \nnet (\x)$ ($\nnet$ is a NNet
    ans $\params$ its set of parameters. Inference requires a numerical solver: $ {\x}_{i}=\textrm{ODE\_Solve}(\nnet, \tx_i)$ and the loss function is 
    $\loss(\params, \dataset) = \sum_{i=1}^{N} ||\tilde{\x}_i - \x_i
-   ||^2$.
-   % 
-   Starting with a step size $h=1$, compute:
-   \begin{equation*}
+   ||^2$.\\
+   
+   {\bf\color{bleutitre} Fehlberg's solver:} starting with a step size $h=1$, compute:
+   \begin{align*}
      f_1 = \nnet(\x_i),\phantom{5ex} 
      f_2 = \nnet(\x_i+hf_1), \phantom{5ex} 
-     f_3 = \nnet(\x_i+\frac{h}{4}[f_1+f_2])
-   \end{equation*}
-   \begin{equation}
-     \label{eq:hyps}
-     A_1 = \x_i+\frac{h}{2}[f_1+f_2] \text{ (RK2 method), and } A_2 = \x_i+\frac{h}{6}[f_1+f_2+4f_3] \text{ (RK3).} 
-   \end{equation}
+     f_3 = \nnet(\x_i+\frac{h}{4}[f_1+f_2])\\
+     A_1 = \x_i+\frac{h}{2}[f_1+f_2] \text{ (RK2)}  \phantom{10ex} A_2 = \x_i+\frac{h}{6}[f_1+f_2+4f_3] \text{ (RK3).} 
+   \end{align*}
    With the error rate $ r = \frac{|A_1-A_2|}{h} \approx Kh^2$, then:
    \begin{itemize}  
    \item If $r > \eps$ (the tolerance set to $0.1$), $A_2$ is rejected and we restart the computation with a new
@@ -195,11 +176,10 @@ aaa
      factor.
    \item Otherwise accept $A_2$ as ${\x}_{i}$
    \end{itemize}
-
-
 }
 
-\headerbox{First round}{headerFontColor=bleutitre,name=exp1,span=2,column=0,row=0.4}{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\headerbox{First round}{headerFontColor=bleutitre,name=exp1,span=2,column=0,row=0.45}{
   \vspace{-2ex}
   \begin{center}
     \hspace{-10ex}\includegraphics[width=0.8\textwidth]{../figs/baseline_lorenz_3}
@@ -211,18 +191,32 @@ aaa
     steps.}
   \end{center}
 }
-\headerbox{Fehlberg's training}{headerFontColor=bleutitre,name=exp2,span=2,column=2,row=0.4}{
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\headerbox{Fehlberg's training}{headerFontColor=bleutitre,name=exp2,span=2,column=2,row=0.45}{
+  ~\\[0.4ex]
   \begin{minipage}{1.05\textwidth}
     \begin{center}
       \includegraphics[width=0.49\textwidth]{../figs/batch_training}
-      \includegraphics[width=0.49\textwidth]{../figs/fehlberg_training}
+      \includegraphics[width=0.49\textwidth]{../figs/fehlberg_training}\vspace{0.5ex}
     \end{center}
   \end{minipage}
   \captionof{figure}{Time evolution for two training conditions of: the MSE loss; the percentage of
     accepted hypotheses $A_2$; the new number of steps for the rejected
     hypotheses (before rounding).}
-
 }
+
+
+%----------------------------------------------------------------------------------------
+%	REFERENCES
+%----------------------------------------------------------------------------------------
+
+\headerbox{Aknowledgment}{name=references,column=0,span=4,above=bottom}{
+% \small{\hfill\textit{\textbf{Funding for this research was provided by Subcontract 3F-30222 from Argonne National Laboratory and by a doctoral grant from Universit\'e Toulouse III Paul Sabatier.}}}
+This work was funded by the French National Research Agency (SPEED-20-CE23-0025).
+}
+
 
 \end{poster}
 \end{document}
