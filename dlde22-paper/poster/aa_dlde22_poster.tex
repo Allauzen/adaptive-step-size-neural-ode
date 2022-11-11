@@ -24,7 +24,7 @@
 \graphicspath{{figures/}} % Directory in which figures are stored
 
 \usepackage{pgf}
-
+\usepackage{tcolorbox}
 \usepackage{amsmath} % For typesetting math
 \usepackage{amssymb} % Adds new symbols to be used in math mode
 \usepackage{mathrsfs}
@@ -55,39 +55,19 @@
 \setlength{\parsep}{0pt}
 }
 
-
-
-
-\definecolor{lightblue}{RGB}{66,66,111} % Defines the color used for content box headers
-
-% Couleurs
-\definecolor{marron}{rgb}{0.21,0.05,0.05} 
-\definecolor{ivoire}{rgb}{1,0.97,0.90}
-%\setbeamercolor{hauthb}{fg=white,bg=marron}
-%\setbeamercolor{bashb}{fg=black,bg=ivoire}
-\definecolor{gold}{rgb}{0.86,0.84,0.}
-%\setbeamercolor{hautmb}{fg=black,bg=gold}
 \definecolor{bleutitre}{rgb}{0,0,1}
-\definecolor{vertbout}{rgb}{0.03,0.42,0.03}
-%\setbeamercolor{hautbout}{fg=white,bg=vertbout}
-\definecolor{vertsauge}{rgb}{0.41,0.82,0.54}
-%\setbeamercolor{bassauge}{fg=black,bg=vertsauge}
-\definecolor{bleupastel}{rgb}{0.34,0.45,0.6}
-%\setbeamercolor{hautbp}{fg=white,bg=bleupastel}
-\definecolor{lavande}{rgb}{0.59,0.51,0.93}
-%\setbeamercolor{baslav}{fg=black,bg=lavande}
-\definecolor{byzan}{rgb}{0.44,0.16,0.39}
-%\setbeamercolor{hautbyz}{fg=white,bg=byzan}
-\definecolor{dragee}{rgb}{0.99,0.75,0.82}
-%\setbeamercolor{basdra}{fg=black,bg=dragee}
-\definecolor{grisfonce}{rgb}{0.2,0.2,0.2}
-%\setbeamercolor{hautgris}{fg=white,bg=grisfonce}
-\definecolor{grispale}{rgb}{0.98,0.98,1}
-%\setbeamercolor{basgris}{fg=black,bg=grispale}
-\definecolor{redgeb}{RGB}{238,64,0}
-%\setbeamercolor{hautgeb}{fg=white,bg=redgeb}
-\definecolor{rougepale}{rgb}{1,0.4,0.4}
-%\definecolor{bleufond}{rgb}{0.92,0.91,0.95}
+\definecolor{f1}{rgb}{0.7,0,0}
+\definecolor{f2}{rgb}{0,0.7,0}
+\definecolor{f3}{rgb}{0,0,0.7}
+\newcommand{\fa}{{\color{f1}f_1}}
+\newcommand{\fb}{{\color{f2}f_2}}
+\newcommand{\fc}{{\color{f3}f_3}}
+
+
+\newlist{citemize}{itemize}{1}
+\setlist[citemize]{label=\textcolor{bleutitre}{\textbullet}}
+
+
 
 
 
@@ -149,33 +129,52 @@ linewidth=1pt % Width of the border lines around content boxes
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\headerbox{Take-home message}{headerFontColor=red,name=abstract,span=2,column=0,row=0}{
-
+\headerbox{Take-home message: what your step size}{headerFontColor=red,name=abstract,span=2,column=0,row=0}{
+  \begin{citemize}
+  \item Neural Ordinary Differential Equations (\textbf{ODE}s) relies on
+     solvers for inference and training. 
+  \item Some solvers can \textbf{adapt} their evaluation strategy depending on the
+    complexity of the problem 
+  \item  However adaptive solvers cannot be seamlessly
+    leveraged as a black-box for dynamical systems modelling. 
+  \item By taking the Lorenz'63 system as a showcase,  a naive application
+    of the Fehlberg's method does not yield the expected
+    results. 
+  \item Moreover, a simple workaround is proposed that assumes a
+    tighter interaction between the solver and the training strategy.
+  \end{citemize}
 }
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \headerbox{Neural ODE and Fehlberg's method}{headerFontColor=bleutitre,name=eq,span=2,column=2,row=0}{
-   Given $\dataset=(\tx_{i})_{i=1}^{\ntrain}$, Neural ODE learns: $\dot{\x} = \nnet (\x)$ ($\nnet$ is a NNet
-   ans $\params$ its set of parameters. Inference requires a numerical solver: $ {\x}_{i}=\textrm{ODE\_Solve}(\nnet, \tx_i)$ and the loss function is 
-   $\loss(\params, \dataset) = \sum_{i=1}^{N} ||\tilde{\x}_i - \x_i
-   ||^2$.\\
+  \begin{citemize}\compresslist
+  \item Given $\dataset=(\tx_{i})_{i=1}^{\ntrain}$, Neural ODE learns: $\dot{\x} = \nnet (\x)$ ($\nnet$ is a NNet
+    ans $\params$ its set of parameters).
+  \item Inference requires a  solver: $ {\x}_{i}=\textrm{ODE\_Solve}(\nnet, \tx_i)$ and the loss function is\\[-1ex]
+   $$\loss(\params, \dataset) = \sum_{i=1}^{N} ||\tilde{\x}_i - \x_i ||^2.$$
+  \end{citemize}
    
    {\bf\color{bleutitre} Fehlberg's solver:} starting with a step size $h=1$, compute:
-   \begin{align*}
-     f_1 = \nnet(\x_i),\phantom{5ex} 
-     f_2 = \nnet(\x_i+hf_1), \phantom{5ex} 
-     f_3 = \nnet(\x_i+\frac{h}{4}[f_1+f_2])\\
-     A_1 = \x_i+\frac{h}{2}[f_1+f_2] \text{ (RK2)}  \phantom{10ex} A_2 = \x_i+\frac{h}{6}[f_1+f_2+4f_3] \text{ (RK3).} 
-   \end{align*}
-   With the error rate $ r = \frac{|A_1-A_2|}{h} \approx Kh^2$, then:
-   \begin{itemize}  
-   \item If $r > \eps$ (the tolerance set to $0.1$), $A_2$ is rejected and we restart the computation with a new
-     step size: $ h'= S \times h\sqrt{\epsilon/r}, $ with $S=0.9$ a safety
+    \begin{align*}
+      {\color{f1} \fa = \nnet(\x_i)},\phantom{xxxxx} 
+      {\color{f2} \fb = \nnet(\x_i+h\fa)}, \phantom{xxxxx} 
+      {\color{f3} \fc = \nnet(\x_i+\frac{h}{4}[\fa+\fb])}\text{ then} \phantom{xxxxx} \\
+      A_1 = \x_i+\frac{h}{2}[\fa+\fb] \text{ (RK2)}  \phantom{xxx} A_2 = \x_i+\frac{h}{6}[\fa+\fb+4\fc] \text{ (RK3).} 
+      \phantom{xxx}
+      \rightarrow
+      \phantom{xxx}
+      r = \frac{|A_1-A_2|}{h} \approx Kh^2
+    \end{align*}
+% %
+   With the error rate $  $, then:
+   \begin{citemize}\compresslist
+   \item If $r > \eps=0.1$ (tolerance), $A_2$ is rejected and restart the computation with a new
+     step size:\\ $h'= S \times h\sqrt{\epsilon/r}, $,  $S=0.9$ is a safety
      factor.
    \item Otherwise accept $A_2$ as ${\x}_{i}$
-   \end{itemize}
+   \end{citemize}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
