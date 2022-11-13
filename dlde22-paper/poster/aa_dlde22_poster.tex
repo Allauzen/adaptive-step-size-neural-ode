@@ -129,20 +129,29 @@ linewidth=1pt % Width of the border lines around content boxes
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\headerbox{Take-home message: what your step size}{headerFontColor=red,name=abstract,span=2,column=0,row=0}{
+\headerbox{Take-home message: whatch your step size !}{headerFontColor=red,name=abstract,span=2,column=0,row=0}{
   \begin{citemize}
   \item Neural Ordinary Differential Equations (\textbf{ODE}s) relies on
      solvers for inference and training. 
   \item Some solvers can \textbf{adapt} their evaluation strategy depending on the
-    complexity of the problem 
-  \item  However adaptive solvers cannot be seamlessly
-    leveraged as a black-box for dynamical systems modelling. 
+    complexity of the problem.
   \item By taking the Lorenz'63 system as a showcase,  a naive application
     of the Fehlberg's method does not yield the expected
     results. 
-  \item Moreover, a simple workaround is proposed that assumes a
-    tighter interaction between the solver and the training strategy.
+  \item  Adaptive solvers cannot be seamlessly
+    leveraged as a black-box: % for dynamical systems modelling.
   \end{citemize}
+  \vspace{-1.5ex}
+  \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
+    \begin{citemize}
+    \item[$\rightarrow$] For most of the numerical methods, the step size is adapted given the self-estimated error of the model.
+    \item[$\rightarrow$] Neural ODE model is always self-confident, and the ``adaptive'' ability is under-used. 
+    \item[$\rightarrow$] A simple workaround:
+    \end{citemize}
+    \begin{center}
+      use the supervision within the solver. \\[0.1ex]~~
+    \end{center}
+  \end{tcolorbox}
 }
 
 
@@ -171,9 +180,9 @@ linewidth=1pt % Width of the border lines around content boxes
    With the error rate $  $, then:
    \begin{citemize}\compresslist
    \item If $r > \eps=0.1$ (tolerance), $A_2$ is rejected and restart the computation with a new
-     step size:\\ $h'= S \times h\sqrt{\epsilon/r}, $,  $S=0.9$ is a safety
+     step size\\ $h'= S \times h\sqrt{\epsilon/r},\ S=0.9$ is a safety
      factor.
-   \item Otherwise accept $A_2$ as ${\x}_{i}$
+   \item Otherwise accept $A_2$ as ${\x}_{i+1}$
    \end{citemize}
 }
 
