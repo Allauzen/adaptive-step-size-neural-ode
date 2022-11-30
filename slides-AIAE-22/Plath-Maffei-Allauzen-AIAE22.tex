@@ -1,15 +1,4 @@
 \documentclass{EESD}
-% To change the slides size go to EESD.cls file and edit the preamble as explained.
-
-% ---- Add your Meta-data to the PDF (Copyrights Kinda!) ----
-\hypersetup{
-  pdfinfo={
-    Title={Presentation: 3D finite element modeling of historical masonry walls},
-    Author={Mahmoud S. Shaqfa, Katrin Beyer},
-    Subject={EPFL - ENAC - EESD Lab},
-    Keywords={Stone masonry, Detailed micro-mechanical, 3D micro-structure}
-  }
-}
 
 % Important packages to be called
 \usepackage{subcaption} % for adding sub-figures
@@ -18,13 +7,12 @@
 
 \usepackage[absolute,overlay]{textpos} % To place the figures by coordinates (x,y) - Beamer doesn't support floats XD
 \usepackage{multicol} % To adjust items and stuff automatically in a number of a pre-specified columns
-\graphicspath{{Figures/}}
+\graphicspath{{Figures}}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{dblfloatfix}
-\usepackage{lipsum} % Just a dummy text generator
 \usepackage{hyperref}
 % fonts packages
 \usepackage{ragged2e} % Justified typesetting
@@ -52,12 +40,18 @@
     frame = single,
 }
 
+
+%%%%%%%%% Shortcuts
+\newcommand{\x}{\ensuremath{h}}
+\newcommand{\params}{\ensuremath{\boldsymbol{\theta}}}
+
+
 \author{Hannah Plath, Thiago Petrilli Maffei Dardis, Alexandre Allauzen}
 \title[AIAE'22]{Experimental study of Neural ODE training with adaptive solver for dynamical systems modeling}
 
-\institute[ENAC]{{ESPCI Paris - PSL}{\newline\newline MILES team – Université Paris Dauphine}}
-\subject{Candidacy Exam}
-\date{December, 2022}
+\institute[ESPCI-PSL]{{ESPCI Paris - PSL}{\newline\newline MILES team – Université Paris Dauphine}}
+\subject{}
+\date{December 1st, 2022}
 
 \begin{document}
 
@@ -102,17 +96,47 @@
 \end{textblock*}
 }
 
+
+\begin{frame}{From ResNet to Neural ODE}
+  A deep Network is a cascade of $K$ transformations/layers , for the k$^{th}$ layer
+  $$
+  \x_k = { \color{red} \underbrace{\ \x_{k-1}\ \ +\ }_{
+      \begin{array}{c}
+        \text{Residual}\\
+        \text{connexion}
+      \end{array}
+    } }
+  \underbrace{\ f_{\params_k} (\x_{k-1}) \ }_{
+    \begin{array}{c}
+      \text{Neural-Net}\\
+      \text{Layer}
+    \end{array}
+  }
+  $$
+  
+  \begin{itemize}
+  \item The residual connexion allows the model to be very deep 
+  \item Help for the vanishing gradient issue
+  \end{itemize}
+
+
+  \begin{alertblock}{If $K \ \longrightarrow\ \infty$}
+        $$\frac{dh(t)}{dt} = f(h(t), t, \params), \text{ the NNet is now a model of the dynamics}$$
+  \end{alertblock}
+  
+\end{frame}
+
 \subsection{Neural ODEs}
 \begin{frame}[t]{Neural ODEs}
 \begin{itemize}
     \item We can parameterize the continuous dynamics of hidden states in Neural Networks with an ODE:\vspace{10pt}
     \begin{equation}
-        \frac{dh(t)}{dt} = f(h(t), t, \theta) 
+        \frac{dh(t)}{dt} = f(h(t), t, \params) 
     \end{equation}\pause
     \item Starting from the input layer $h(0)$, we can define the output layer $h(T)$ to be the solution to this ODE initial value problem at some time $T$.\vspace{10pt}\pause
     \item From the hidden state $z(t_0)$ we can define the loss function at $z(t_1)$ as:
     \begin{equation}
-        L(z(t_1)) = L(z(t_0)+\int_{t_0}^{t_1} f(z(t), t, \theta))dt
+        L(z(t_1)) = L(z(t_0)+\int_{t_0}^{t_1} f(z(t), t, \params))dt
     \end{equation}\vspace{10pt}
 \end{itemize}
 \end{frame}
@@ -143,13 +167,13 @@
 \end{textblock*}
 }
 
-\subsection{Evaluations of $f_{\theta}$}
-\begin{frame}[t]{Evaluations of $f_{\theta}$}
+\subsection{Evaluations of $f_{\params}$}
+\begin{frame}[t]{Evaluations of $f_{\params}$}
 \begin{itemize}
-    \item The method requires three evaluations of $f_{\theta}$ for a fixed step-size $h$:
+    \item The method requires three evaluations of $f_{\params}$ for a fixed step-size $h$:
     \begin{equation}
         \begin{aligned}
-            f_1 = f_\theta(x_i),\ f_2 = f_\theta(x_i + hf_i),\ f_3 = f_\theta(x_i + \frac{h}{4}[f_1 + f_2])
+            f_1 = f_{\params}(x_i),\ f_2 = f_{\params}(x_i + hf_i),\ f_3 = f_{\params}(x_i + \frac{h}{4}[f_1 + f_2])
         \end{aligned}
     \end{equation}\pause
     \item Then, we can compute two approximations for the next point:
@@ -167,7 +191,7 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}[t]{Evaluations of $f_{\theta}$}
+\begin{frame}[t]{Evaluations of $f_{\params}$}
 \begin{itemize}
     \item If $r>\epsilon$, then $A_2$ is rejected and we need to restart the computation with \begin{equation}
         h'= S \times h\sqrt{\epsilon/r}
@@ -190,18 +214,21 @@
     \begin{figure}
         \centering
         \hspace*{-1.5cm}
-        \includegraphics[width=16cm]{baseline_lorenz_3.pdf}
-        \caption{Each figure depicts a different time slice of the generated trajectory and of the original training data: from 0 to 600, 600 to 1200 and 2000 to 2600.}
+        \includegraphics[width=16cm]{baseline_lorenz_3}
+        \caption{Each figure depicts a different time slice of the
+          generated trajectory and of the original training data: from
+          0 to 600, 600 to 1200 and 2000 to 2600.}
         \label{fig:lorenz}
-    \end{figure}                                                    
+    \end{figure}
 \end{frame}
+
 
 \subsection{Performance}
 \begin{frame}{Performance}
     \begin{figure}
         \centering
-        \includegraphics[width=14cm, height=5cm]{baseline_time_series_2x2.pdf}
-        \caption{Time evolution of (from left to right and top to bottom): the MSE, the evolution of $x1_$, the MSE w.r.t the true ODE of Lorenz’63, and the number of steps.}
+        \includegraphics[width=14cm, height=5cm]{baseline_time_series_2x2}
+        \caption{Time evolution of (from left to right and top to bottom): the MSE, the evolution of $x_1$, the MSE w.r.t the true ODE of Lorenz’63, and the number of steps.}
         \label{fig:lorenz_error}
     \end{figure}                                                    
 \end{frame}
@@ -222,6 +249,34 @@
         \caption{Time evolution for two training conditions of: the MSE loss; the percentage of accepted hypotheses $A_2$; the new number of steps for the rejected hypotheses (before rounding).}
         \label{fig:lorenz_error}
     \end{figure}                                                    
+\end{frame}
+
+
+\section{Conclusion}
+\breakingframe{
+    \begin{textblock*}{16cm}[0, 0](0.29\textwidth,  0.5\textheight)
+        \textbf{\Huge{Conclusion}}
+    \end{textblock*}
+}
+
+\begin{frame}{Take-home message: whatch your step size !}
+  \begin{itemize}
+  \item Neural \textbf{ODE} relies on
+    solvers for inference and training. 
+  \item  Adaptive solvers cannot be seamlessly
+    leveraged as a black-box: % for dynamical systems modelling.
+  \end{itemize}
+  \begin{alertblock}{Our contributions:}
+    \begin{itemize}
+    \item[$\rightarrow$] For most of the numerical methods, the step size is adapted given the self-estimated error of the model.
+    \item[$\rightarrow$] Neural ODE model is always self-confident, and the ``adaptive'' ability is under-used. 
+    \item[$\rightarrow$] A simple workaround:
+    \end{itemize}
+  \begin{center}
+    use the supervision within the solver.
+  \end{center}
+      \hfill\url{https://github.com/Allauzen/adaptive-step-size-neural-ode}
+  \end{alertblock}
 \end{frame}
 
 % -----------------------References

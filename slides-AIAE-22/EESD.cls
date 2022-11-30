@@ -183,7 +183,7 @@
         \box\beamer@tempbox%    
 }%
 
-    \setbeamercolor{background canvas}{bg={rgb}{0.97, 0.56, 0.65}}
+    \setbeamercolor{background canvas}{bg=mypink}
     \begin{frame}[t, noframenumbering, allowframebreaks]{}
         #1
     \end{frame}
