@@ -51,8 +51,8 @@
 \setbeamercolor{block body example}{fg = black, bg = green2}
 \setbeamercolor{block title example}{fg = white, bg = green1}
 
-\setbeamercolor{block body alerted}{fg = black, bg = violet2}
-\setbeamercolor{block title alerted}{fg=white, bg=violet1}
+\setbeamercolor{block body alerted}{fg = black}
+\setbeamercolor{block title alerted}{fg=white, bg=beamerfooter1}
 
 \pgfdeclarehorizontalshading[beamerfooter1,beamerfooter2,beamerfooter3]
     {beamer@frametitleshade}{\paperheight}{
