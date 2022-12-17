@@ -13,6 +13,7 @@ the Lorenz'63 system as a showcase, we show that a naive application of the Fehl
 
 ## Contents
 
-To reproduce the results, you can use existing datasets and/or pre-trained models. You have two directories for that. 
-Otherwise, look at [this notebook](Adaptive_training-Figures.ipynb) to train and ply with the models. Then for the figure follow [this notebook](Figures.ipynb).  
+To reproduce the results, you can use existing *datasets* and/or pre-trained models. You have two directories for that. 
+
+Look at [this notebook](Adaptive_training-Figures.ipynb) to train and play with the models. If you want to reproduce the figure of the paper you can use  [this other notebook](Figures.ipynb).  
 
