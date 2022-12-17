@@ -153,9 +153,6 @@ models~\cite{Greydanus19Hamlitonian} are often considered with
 success. However, the system understudy derives from an ODE and Neural
 ODE is also a well suited framework to consider.
 %%%%
-%Neural ODE has been recently introduced through differents papers
-%\cite{Haber17Stable,WE17Proposal,Chen18NODE} and can be readily
-%applied to time series modelling.
 The main idea is to learn the dynamics underlying the generation of
 $\dataset$. The neural network aims at learning
 $ \dot{\x} = \nnet (\x)$, where $\nnet$ is an arbitrary architecture
@@ -169,13 +166,14 @@ $\loss(\params, \dataset) = \sum_{i=1}^{N} ||\tilde{\x}_i - \x_i
 ||^2$.
 
 
-An advantage of Neural ODE is the  choice of the solver and
-especially the possibility to adapt the step size depending on the
-problem complexity. In this paper, we focus on the Fehlberg's 3(2)\footnote{The Runge-Kutta method of order 3 (RK3)
-  along with second order version for the error control.}
-method~\cite{Fehlberg68}, for its
-simplicity of exposition, since our goal is to analyse  how the interaction between the solver
-and the training process.
+An advantage of Neural ODE is the choice of the solver and especially
+the possibility to adapt the step size depending on the problem
+complexity. In this paper, we focus on the Fehlberg's
+3(2)\footnote{The Runge-Kutta method of order 3 (RK3) along with
+  second order version for the error control.}
+method~\cite{Fehlberg68}, for its simplicity of exposition, since our
+goal is to analyse how the interaction between the solver and the
+training process.
 
 
 \subsection{Fehlberg's method under the hood}
@@ -265,7 +263,6 @@ the development set.
 \begin{figure}[thb]
   \centering
   \includegraphics[width=1\textwidth]{./figs/baseline_time_series_2x2}
-  %\includegraphics[width=0.49\textwidth]{./figs/baseline_time_series}
   \caption{Time evolution of (from left to right and top to bottom):
     the MSE, the evolution of $x_1$, the MSE \textit{w.r.t} the true ODE of
     Lorenz'63, and  the number of
@@ -294,10 +291,6 @@ of the step size adaption.
 To further understand this fact, we investigate what happens during
 the training process by monitoring three different quantities measured
 after each epoch and represented in figure~\ref{fig:training_series}. 
-%the training loss, the percentage of accepted hypotheses by the
-%Fehlberg's method (relying on a single step size of integration), and
-%for the rejected hypotheses the new proposed number of steps (before
-%rounding).
 The first column corresponds to the standard training method which
 considers the adaptive solver as a black-box as described in the
 seminal paper~\cite{Chen18NODE}. We can observe from the second row
@@ -315,7 +308,8 @@ the goal of increasing this initial estimate. Another workaround
 consists in lowering the tolerance factor $\eps$ to let the Felhberg's
 method reject more hypotheses and therefore adapt the step size more
 frequently.  However, this introduces a new hyperparameter to
-tune\footnote{Additional experiments in Appendix~\ref{sec:eps} show the limits of this remedy.}. 
+tune\footnote{Additional experiments in Appendix~\ref{sec:eps} show
+  the limits of this remedy.}.
 
 \section{Fehlberg's training }
 \label{sec:fehlberg-training}
@@ -332,9 +326,12 @@ tune\footnote{Additional experiments in Appendix~\ref{sec:eps} show the limits o
 
 In this paper, we propose another solution which modifies the training
 procedure. The idea derives from the Fehlberg's method by simply
-changing how the local truncation error is estimated. Let us consider equation~\ref{eq:hyps} defining the error rate.
-When predicting the value $\x_i$ from $\tx_{i-1}$, we can use directly the target value $\tx_i$, which is available during training,  instead of the raw estimate $A_1$ given by the Heun's method (\textit{aka} RK2). The basic
-hypothesis $A_2$ is still obtained with one step of RK3.
+changing how the local truncation error is estimated. Let us consider
+equation~\ref{eq:hyps} defining the error rate.  When predicting the
+value $\x_i$ from $\tx_{i-1}$, we can use directly the target value
+$\tx_i$, which is available during training, instead of the raw
+estimate $A_1$ given by the Heun's method (\textit{aka} RK2). The
+basic hypothesis $A_2$ is still obtained with one step of RK3.
 %Then the error can be written as follows:
 % \begin{equation}
 %   \label{eq:error_supervised}
@@ -345,9 +342,6 @@ unchanged. This new method greatly impacts the training process. On
 the second column of the figure~\ref{fig:training_series}, we observe
 a very different trend: the proportion of accepted hypotheses starts at 0 and 
 progressively increases to reach approximately 98\%.
-% This means that at the beginning of training, the prediction of \nnet are really bad, and the modified solver increases the step size (multuplying the number of updates)
-% At the end of
-%training only 2\% of the training points are considered as difficult.
 For the rejected hypotheses, the new number of steps (before rounding)
 starts at the high value of $7$ and affects all the training examples:
 after the random initialization of $\nnet$, all the training examples
@@ -375,24 +369,9 @@ our results, it will be possible to tackle more challenging tasks and
 while we focused on generative models for time series forecasting, it
 could be useful to extend our approach to classification tasks.
 
-%\section{Aknowledgment}
-%\label{sec:ak}
 \textbf{Aknowledgment:} This work was funded by the French National Research Agency (ANR
 SPEED-20-CE23-0025). Thanks to Clément Royer for his help.
 
-
-% \begin{itemize}
-% \item supervised classif
-% \item init step size = 1
-% \item min and not mean -> appendix on batch training
-% \item exp setting
-% \item Appendice: esp variation
-% \item Other spyral generated
-% \item Dev and train MSE
-% \item noise on the init point ? 
-% \item github content: code, notebook, more experiments
-% \item ``explicite'' discretization, no adjoint. 
-% \end{itemize}
 
 \bibliographystyle{plain}
 \bibliography{aa_dlde22}
@@ -411,7 +390,8 @@ of them consists in a trajectory of 5000 points.
 \subsection{Optimization}
 \label{ssec:optim}
 
-The training process is carried out in batch mode with  the L-BFGS optimizer with  the default setting: 
+The training process is carried out in batch mode with the L-BFGS
+optimizer with the default setting:
 \begin{itemize}
 \item The initial learning rate is set by default to 1. However,
   L-BFGS quickly reconsider this value through many function
@@ -419,8 +399,11 @@ The training process is carried out in batch mode with  the L-BFGS optimizer wit
 \item The number of iterations per optimization step is set to 20. It
   means that one epoch of the batch training is not comparable with
   other optimization algorithms like gradient descent or ADAM.
-\item   The number  of function evaluations per optimization step is 25, and the tolerance factors are set to $10^{-5}$ for the gradient, and  $10^{-9}$ for the tolerance on function value changes. 
-\item The history size is limited to 100 and the optimizer uses a line search (see~\cite{Liu89LBFGS}).
+\item The number of function evaluations per optimization step is 25,
+  and the tolerance factors are set to $10^{-5}$ for the gradient, and
+  $10^{-9}$ for the tolerance on function value changes.
+\item The history size is limited to 100 and the optimizer uses a line
+  search (see~\cite{Liu89LBFGS}).
 \end{itemize}
 
 For the Fehlberg's method, we use our own implementation without using
@@ -431,14 +414,14 @@ the adjoint method.
 \label{ssec:batch}
 
 
-With Neural ODE, $\nnet$ represents the elementary block. The inference
-step consists building on the fly the whole network, depending on how
-the solver proceeds to predict the output. For instance, with the
-Euler method, the whole network is very similar to the ResNet
-architecture~\cite{He16Deep,Haber17Stable,Lu18Beyond}.  With the
-Fehlberg's method, the step size is adapted for each training example,
-meaning that the whole network (and its computational graph) is
-different. This is an obstacle for mini-batch or batch training.
+With Neural ODE, $\nnet$ represents the elementary block. The
+inference step consists building on the fly the whole network,
+depending on how the solver proceeds to predict the output. For
+instance, with the Euler method, the whole network is very similar to
+the ResNet architecture~\cite{He16Deep,Haber17Stable,Lu18Beyond}.
+With the Fehlberg's method, the step size is adapted for each training
+example, meaning that the whole network (and its computational graph)
+is different. This is an obstacle for mini-batch or batch training.
 However, online training drastically increase the computational time.
 As a trade-off, we propose the following procedure for each (mini)
 batch:
@@ -505,14 +488,12 @@ generation is really similar to the original one.
 To complement the comparison of the baseline training and the
 Fehlberg's training (see respectively section~\ref{sec:first-exp} and
 \ref{sec:fehlberg-training}), additional figures are provided here.
-%The first one (figure~\ref{fig:fehlberg_lorenz}) represents the trajectory generated after the Felhberg's training and must be compared with figure~\ref{fig:baseline_lorenz}. 
 \begin{figure}[thb]
   %\hspace*{-2cm}
   \includegraphics[width=1\textwidth]{./figs/fehlberg_lorenz_3}
   \caption{The trajectories predicted after the Fehlberg's training.}
   \label{fig:fehlberg_lorenz}
 \end{figure}
-%Then the following figures~\ref{fig:generations} allows us to zoom on the trajectories in different settings. 
 \begin{figure}[thb]
   \centering
   \includegraphics[width=0.45\textwidth]{./figs/baseline_vs_data_0_to_20.pdf}
