@@ -46,7 +46,7 @@
 \newcommand{\params}{\ensuremath{\boldsymbol{\theta}}}
 
 
-\author{Hannah Plath, Thiago Petrilli Maffei Dardis, Alexandre Allauzen}
+\author{\textbf{Hannah Plath}, Thiago Petrilli Maffei Dardis, Alexandre Allauzen}
 \title[AIAE'22]{Experimental study of Neural ODE training with adaptive solver for dynamical systems modeling}
 
 \institute[ESPCI-PSL]{{ESPCI Paris - PSL}{\newline\newline MILES team – Université Paris Dauphine}}
@@ -96,7 +96,7 @@
 \end{textblock*}
 }
 
-
+\subsection{From ResNet to Neural ODE}
 \begin{frame}{From ResNet to Neural ODE}
   A deep Network is a cascade of $K$ transformations/layers , for the k$^{th}$ layer
   $$
@@ -214,7 +214,7 @@
     \begin{figure}
         \centering
         \hspace*{-1.5cm}
-        \includegraphics[width=16cm]{baseline_lorenz_3}
+        \includegraphics[width=16cm]{/baseline_lorenz_3.pdf}
         \caption{Each figure depicts a different time slice of the
           generated trajectory and of the original training data: from
           0 to 600, 600 to 1200 and 2000 to 2600.}
@@ -227,7 +227,7 @@
 \begin{frame}{Performance}
     \begin{figure}
         \centering
-        \includegraphics[width=14cm, height=5cm]{baseline_time_series_2x2}
+        \includegraphics[width=14cm, height=5cm]{/baseline_time_series_2x2.pdf}
         \caption{Time evolution of (from left to right and top to bottom): the MSE, the evolution of $x_1$, the MSE w.r.t the true ODE of Lorenz’63, and the number of steps.}
         \label{fig:lorenz_error}
     \end{figure}                                                    
@@ -244,8 +244,8 @@
 \begin{frame}{Results}
     \begin{figure}
         \centering
-        \includegraphics[width=0.49\textwidth]{batch_training.pdf}
-        \includegraphics[width=0.49\textwidth]{fehlberg_training.pdf}
+        \includegraphics[width=0.49\textwidth]{/batch_training.pdf}
+        \includegraphics[width=0.49\textwidth]{/fehlberg_training.pdf}
         \caption{Time evolution for two training conditions of: the MSE loss; the percentage of accepted hypotheses $A_2$; the new number of steps for the rejected hypotheses (before rounding).}
         \label{fig:lorenz_error}
     \end{figure}                                                    
@@ -254,12 +254,13 @@
 
 \section{Conclusion}
 \breakingframe{
-    \begin{textblock*}{16cm}[0, 0](0.29\textwidth,  0.5\textheight)
+    \begin{textblock*}{16cm}[0,0](0.4\textwidth,  0.5\textheight)
         \textbf{\Huge{Conclusion}}
     \end{textblock*}
 }
 
-\begin{frame}{Take-home message: whatch your step size !}
+\subsection{Take-home message}
+\begin{frame}{Take-home message: watch your step size !}
   \begin{itemize}
   \item Neural \textbf{ODE} relies on
     solvers for inference and training. 
@@ -292,7 +293,7 @@
 \begin{figure}
     \centering
     \vspace{1.3cm}
-    \includegraphics[width=0.3\textwidth]{qrcode.png}
+    \includegraphics[width=0.3\textwidth]{/qrcode.png}
 \end{figure}
 }
 
