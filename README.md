@@ -2,7 +2,7 @@
 
 This work has started during the supervised project at [ESPCI](https://www.espci.psl.eu/) (*PSE* aka Team Scientific Project), after some preliminary work on Neural ODE. The paper is accepted at the 2nd NeurIPS [workshop on Deep Learning and Differential Equations](https://dlde-2022.github.io/).
 
-This code allows you to reproduce the results and figures of the paper. The code uses pytorch (1.12.1) and numpy (1.21.5).
+[The paper is on Arxiv.](https://arxiv.org/abs/2211.06972) This code allows you to reproduce the results and figures of the paper. The code uses pytorch (1.12.1) and numpy (1.21.5).
 
 
 ## Abstract 
